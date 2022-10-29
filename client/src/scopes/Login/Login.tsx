@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
 
-import "./Login.css";
-
 export default function Login() {
   const history = useHistory();
   const [validated, setValidated] = useState(false);
