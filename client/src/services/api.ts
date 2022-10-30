@@ -10,6 +10,13 @@ const setHeadersToRequest = (token: string | null): any | null => {
     return null;
 }
 
+export const get = (route: string, token?: string) => {
+    const headers = setHeadersToRequest(token);
+    return axios.get(`${baseURL}/${route}`, {
+        headers
+    });
+}
+
 export const post = (body: any, route: string, token?: string) => {
     const headers = setHeadersToRequest(token);
     return axios.post(`${baseURL}/${route}`, body, {
