@@ -44,6 +44,15 @@ export default function Trade() {
     setOnEdit(false);
     setOrders(ordersCopy);
   }
+  
+  const deleteOrder = async (id: number) => {
+    try {
+      await orderService.deleteOrder(id, token);
+      await getOrders();
+    } catch (error) {
+      setError("OUPS... Une erreur est survenue");
+    }
+  }
 
   const updateOrdersInApi = async () => {
     try {
@@ -129,10 +138,11 @@ export default function Trade() {
           <Col lg="2">
             <Form.Control
               id="price"
-              onChange={(e) => order.price = parseInt(e.target.value)}
+              onChange={(e) => order.price = e.target.value}
               placeholder="100"
               required
               type="number"
+              step=".01"
             />
           </Col>
 
@@ -203,6 +213,7 @@ export default function Trade() {
         orders={orders}
         user={user}
         updateOrders={updateOrders}
+        deleteOrder={deleteOrder}
       ></Orders>
       <div className="stats"></div>
     </Container>

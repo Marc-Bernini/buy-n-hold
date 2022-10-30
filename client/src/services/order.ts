@@ -12,3 +12,7 @@ export const getOrders = (token: string | null) => {
 export const updateOrders = (orders: Array<Order>, token: string | null) => {
     return api.put(orders, "order", token);
 }
+
+export const deleteOrder = (id: number, token: string | null) => {
+    return api.destroy(id, "order", token);
+}

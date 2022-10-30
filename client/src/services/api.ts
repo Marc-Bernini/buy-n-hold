@@ -30,3 +30,10 @@ export const put = (body: any, route: string, token?: string) => {
         headers
     });
 }
+
+export const destroy = (id: number, route: string, token?: string) => {
+    const headers = setHeadersToRequest(token);
+    return axios.delete(`${baseURL}/${route}/${id}`, {
+        headers
+    });
+}

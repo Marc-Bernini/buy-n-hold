@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Form, Table } from "react-bootstrap";
 import { Order } from "../interfaces/Order";
 
-export default function Orders({ onEdit, orders, user, updateOrders }) {
+export default function Orders({ onEdit, orders, user, updateOrders, deleteOrder }) {
     return (
         <Table striped bordered hover>
             <thead>
@@ -42,6 +42,7 @@ export default function Orders({ onEdit, orders, user, updateOrders }) {
                                     <Button
                                         variant="danger"
                                         disabled={user?.id !== order.user.id}
+                                        onClick={() => deleteOrder(order.id)}
                                     >
                                         Supprimer
                                     </Button>
