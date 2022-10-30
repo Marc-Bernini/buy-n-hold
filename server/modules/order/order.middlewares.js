@@ -32,3 +32,14 @@ exports.updateOrders = async (req, res, next) => {
         next(error);
     }
 }
+
+exports.deleteOrder = async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        console.log({id})
+        await orderService.deleteOrder(id);
+        res.status(200).json({"OK": true});
+    } catch (error) {
+        next(error);
+    }
+}

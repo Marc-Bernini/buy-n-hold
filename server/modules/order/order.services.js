@@ -20,3 +20,7 @@ exports.findAllWithUsers = () => {
 exports.updateOrdersPrice = orders => {
     return models.Order.bulkCreate(orders, { updateOnDuplicate: ["price"] });
 }
+
+exports.deleteOrder = id => {
+    return models.Order.destroy({where: {id}});
+}
