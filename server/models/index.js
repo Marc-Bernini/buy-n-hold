@@ -29,4 +29,4 @@ const models = {
   Order
 };
 
-exports.models;
+module.exports = models;
