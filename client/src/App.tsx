@@ -35,9 +35,7 @@ function App() {
         <Switch>
           <Route path="/login" component={Login}></Route>
           {token && (
-            <>
-              <Route path="/trade" component={Trade}></Route>
-            </>
+            <Route path="/trade" component={Trade}></Route>
           )}
           <Route path="*" exact>
             <h1>
