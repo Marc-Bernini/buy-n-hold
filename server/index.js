@@ -4,7 +4,7 @@ const express = require("express");
 require("dotenv").config();
 const sequelize = require("./models");
 const user = require("./modules/user/user.routes");
-
+const order = require("./modules/order/order.routes");
 
 const port = 4242;
 const app = express();
@@ -29,3 +29,4 @@ app.listen(port, () => {
 
 
 app.use(user);
+app.use(order);
