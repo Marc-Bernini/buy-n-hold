@@ -14,7 +14,6 @@ const setHeadersToRequest = (): any | null => {
 
 export const post = (body: any, route: string) => {
     const headers = setHeadersToRequest();
-    console.log(body)
     return axios.post(`${baseURL}/${route}`, body, {
         headers
     });
