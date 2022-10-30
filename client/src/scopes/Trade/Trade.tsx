@@ -76,8 +76,10 @@ export default function Trade() {
     setOrders(newOrders);
   }
 
+
+  const reducer = (previousValue: number, currentValue: number) => previousValue + currentValue;
+
   const getTotalOrders = (date: string) => {
-    const reducer = (previousValue: number, currentValue: number) => previousValue + currentValue;
     const initialValue = 0;
     const prices: Array<number> = orders
       .filter(order => order.expirationDate === date)
@@ -85,6 +87,14 @@ export default function Trade() {
 
     const total: number = prices.reduce(reducer, initialValue);
     setTotalOrders(total);
+  }
+
+  const getOrdersAverage = () => {
+    const initialValue = 0;
+    const numberOfOrders: number = orders.length;
+    const prices: Array<number> = orders.map(order => parseFloat(order.price));
+    const totalPrices = prices.reduce(reducer, initialValue);
+    return totalPrices/numberOfOrders;
   }
 
 
@@ -241,6 +251,15 @@ export default function Trade() {
 
         <Col className="bg-success text-white" lg="2">
           Total: {totalOrders}
+        </Col>
+      </Row>
+      <Row className="align-items-center">
+        <Form.Label column="lg" lg={3} htmlFor="date">
+          {"Moyenne des ordres d'achats"}
+        </Form.Label>
+
+        <Col className="bg-success text-white" lg="2">
+          Total: {getOrdersAverage()}
         </Col>
       </Row>
       <div className="stats"></div>
