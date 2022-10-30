@@ -22,3 +22,13 @@ exports.getOrders = async (req, res, next) => {
         next(error);
     }
 }
+
+exports.updateOrders = async (req, res, next) => {
+    try {
+        const orders = req.body;
+        await orderService.updateOrdersPrice(orders);
+        res.status(200).json({"OK": true});
+    } catch (error) {
+        next(error);
+    }
+}

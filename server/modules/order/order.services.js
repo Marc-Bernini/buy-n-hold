@@ -12,6 +12,11 @@ exports.findAllWithUsers = () => {
                 model: models.User,
                 attributes: ["id", "username"]
             }
-        ]
+        ],
+        order: [["createdAt", "desc"]]
     });
+}
+
+exports.updateOrdersPrice = orders => {
+    return models.Order.bulkCreate(orders, { updateOnDuplicate: ["price"] });
 }

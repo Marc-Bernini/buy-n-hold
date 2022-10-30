@@ -5,5 +5,6 @@ const auth = require("../../services/auth");
 router.use("/order", auth.isAuthenticated);
 router.route("/order").get(order.getOrders)
 router.route("/order").post(order.createOrder);
+router.route("/order").put(order.updateOrders);
 
 module.exports = router;
