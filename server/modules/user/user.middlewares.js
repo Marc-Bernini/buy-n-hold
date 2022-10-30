@@ -20,7 +20,7 @@ exports.createUser = async (req, res, next) => {
             passwordIsGood = await bcryptService.compare(password, existingUser.password);
         }
         if (!passwordIsGood && existingUser) {
-            return res.status(401).json({ message: "Mot de passe incorrect" });
+            return res.status(401).send("Mot de passe incorrect");
         }
         const id = newUser?.id || existingUser.id;
         const jwtPayload = { id };
