@@ -11,10 +11,7 @@ export default function Login() {
   const [validated, setValidated] = useState(false);
   const [error, setError] = useState(null);
   const { token, setToken } = useAppContext();
-  const user: User = {
-    username: null,
-    password: null
-  }
+  let user: User;
 
   const onSubmit = (event) => {
     const form = event.currentTarget;
