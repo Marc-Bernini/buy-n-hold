@@ -12,3 +12,13 @@ exports.createOrder = async (req, res, next) => {
         next(error);
     }
 }
+
+exports.getOrders = async (req, res, next) => {
+    try {
+        const orders = await orderService.findAllWithUsers();
+        const {user} = req;
+        res.status(200).json({orders, user})
+    } catch (error) {
+        next(error);
+    }
+}
