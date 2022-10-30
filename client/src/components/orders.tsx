@@ -21,6 +21,7 @@ export default function Orders({ onEdit, orders, user, updateOrders, deleteOrder
                                 {
                                     user?.id === order.user.id &&
                                     <Form.Control
+                                        className="mx-auto text-center w-25"
                                         placeholder="price"
                                         aria-label="price"
                                         value={order.price}
