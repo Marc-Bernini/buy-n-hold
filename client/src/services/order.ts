@@ -8,3 +8,7 @@ export const createOrder = (order: Order, token: string | null) => {
 export const getOrders = (token: string | null) => {
     return api.get("order", token);
 }
+
+export const updateOrders = (orders: Array<Order>, token: string | null) => {
+    return api.put(orders, "order", token);
+}

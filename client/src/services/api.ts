@@ -23,3 +23,10 @@ export const post = (body: any, route: string, token?: string) => {
         headers
     });
 }
+
+export const put = (body: any, route: string, token?: string) => {
+    const headers = setHeadersToRequest(token);
+    return axios.put(`${baseURL}/${route}`, body, {
+        headers
+    });
+}

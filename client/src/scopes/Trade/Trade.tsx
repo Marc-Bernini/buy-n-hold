@@ -6,8 +6,7 @@ import {
   Container,
   Form,
   Row,
-  Spinner,
-  Table
+  Spinner
 } from "react-bootstrap";
 import Orders from "../../components/orders";
 import { useAppContext } from "../../contexts/AppContext";
@@ -22,9 +21,11 @@ export default function Trade() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [ordersCopy, setOrdersCopy] = useState([]);
   const [user, setUser] = useState(null);
   const [onEdit, setOnEdit] = useState(false);
   const { token, setToken } = useAppContext();
+  const [showAlert, setShowAlert] = useState(false);
 
   const getOrders = async () => {
     try {
@@ -32,10 +33,37 @@ export default function Trade() {
       const ordersFromDb: Array<Order> = data.orders;
       const userFromDb: User = data.user;
       setOrders(ordersFromDb);
+      setOrdersCopy(ordersFromDb);
       setUser(userFromDb);
     } catch (error) {
       throw error;
     }
+  }
+
+  const cancel = () => {
+    setOnEdit(false);
+    setOrders(ordersCopy);
+  }
+
+  const updateOrdersInApi = async () => {
+    try {
+      setOnEdit(false);
+      const ordersToUpdate: Array<Order> = orders.filter(order => order.user.id === user?.id);
+      await orderService.updateOrders(ordersToUpdate, token);
+      setShowAlert(true);
+    } catch (error) {
+      setError("OUPS... Une erreur est survenue");
+    }
+  }
+
+  const updateOrders = (index: number) => (event) => {
+    const newOrders = orders.map((order, i) => {
+      if (index === i) {
+        return { ...order, price: event.target.value };
+      }
+      return order;
+    });
+    setOrders(newOrders);
   }
 
 
@@ -126,9 +154,55 @@ export default function Trade() {
           </Col>
         </Row>
       </Form>
+      <Row className="align-items-center mt-3">
+        <Col lg="2">
+          {
+            !onEdit &&
+            <Button
+
+              onClick={() => setOnEdit(!onEdit)}
+              variant="primary"
+            >
+              Modifier
+            </Button>
+          }
+
+          {
+            onEdit &&
+            <Row className="justify-content-around">
+              <Col lg="4">
+                <Button
+                  onClick={updateOrdersInApi}
+                  variant="success"
+                >
+                  Valider
+                </Button>
+              </Col>
+              <Col lg="4">
+                <Button
+                  onClick={cancel}
+                  variant="warning"
+                >
+                  Annuler
+                </Button>
+              </Col>
+            </Row>
+          }
+        </Col>
+        {
+          showAlert &&
+          <Col lg="6">
+            <Alert variant="success" onClose={() => setShowAlert(false)} dismissible>
+              Ordres dachats mis à jour !
+            </Alert>
+          </Col>
+        }
+      </Row>
       <Orders
+        onEdit={onEdit}
         orders={orders}
         user={user}
+        updateOrders={updateOrders}
       ></Orders>
       <div className="stats"></div>
     </Container>
