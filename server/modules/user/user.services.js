@@ -12,3 +12,9 @@ exports.findByUsername = username => {
         }
     });
 }
+
+exports.findByPk = id => {
+    return models.User.findByPk(id, {
+        attributes: ["id"]
+    });
+}
