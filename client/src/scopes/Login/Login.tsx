@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
+import { Alert, Button, Col, Container, Form, InputGroup, Spinner } from "react-bootstrap";
 import * as auth from "../../services/auth";
 import { User } from "../../interfaces/User";
 
 export default function Login() {
   const history = useHistory();
+  const [loading, setLoading] = useState(false);
   const [validated, setValidated] = useState(false);
+  const [error, setError] = useState(null);
   const user: User = {
     username: null,
     password: null
@@ -25,15 +27,34 @@ export default function Login() {
 
   const createAndLogUser = async () => {
     try {
-          const res = await auth.createAndLogin(user);
-          // history.push("/trade?token=test");
-    } catch(error) {
-      console.log(error)
+      setLoading(true);
+      const res = await auth.createAndLogin(user);
+      console.log(res);
+      setLoading(false);
+      // history.push("/trade?token=test");
+    } catch (error) {
+      const { response } = error;
+      let message: string;
+      if (response.status === 401) {
+        message = response.data;
+      } else {
+        message = "OUPS... Une erreur est survenue";
+      }
+      setError(message);
+      setLoading(false);
     }
   }
 
   return (
     <Container className="my-auto">
+      {
+        error &&
+        <Col className="mx-auto" lg="3" xs="10">
+          <Alert variant="danger">
+            {error}
+          </Alert>
+        </Col>
+      }
       <Form
         noValidate
         onSubmit={onSubmit}
@@ -82,9 +103,22 @@ export default function Login() {
             </Form.Control.Feedback>
           </InputGroup>
         </Form.Group>
-        <Button type="submit" variant="primary">
-          Submit
-        </Button>
+        <Col className="d-grid gap-2 mx-auto" lg="3" xs="10">
+          <Button type="submit" variant="primary" disabled={loading}>
+            {
+              loading ?
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                :
+                "Submit"
+            }
+          </Button>
+        </Col>
       </Form>
     </Container>
   );
