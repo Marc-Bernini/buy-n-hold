@@ -1,21 +1,18 @@
 import axios from 'axios';
 const baseURL = "http://localhost:4242";
 
-const setHeadersToRequest = (): any | null => {
-
-    // if (userInformations) {
-    //     const parseUserInformations: Auth = JSON.parse(userInformations);
-    //     return {
-    //         Authorization: `Bearer ${parseUserInformations.access_token}`
-    //     };
-    // }
+const setHeadersToRequest = (token: string | null): any | null => {
+    if (token) {
+        return {
+            Authorization: `Bearer ${token}`
+        };
+    }
     return null;
 }
 
-export const post = (body: any, route: string) => {
-    const headers = setHeadersToRequest();
+export const post = (body: any, route: string, token?: string) => {
+    const headers = setHeadersToRequest(token);
     return axios.post(`${baseURL}/${route}`, body, {
         headers
     });
-
 }
