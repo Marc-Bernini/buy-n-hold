@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, Form, Table } from "react-bootstrap";
+import { Order } from "../interfaces/Order";
 
-
-export default function Orders({ orders, user }) {
-    const [onEdit, setOnEdit] = useState(false);
-
+export default function Orders({ onEdit, orders, user, updateOrders }) {
     return (
         <Table striped bordered hover>
             <thead>
@@ -12,13 +10,11 @@ export default function Orders({ orders, user }) {
                     <th>Username</th>
                     <th>Price</th>
                     <th>Expiration</th>
-                    <th>Modifier</th>
-                    <th>Supprimer</th>
                 </tr>
             </thead>
             <tbody>
                 {orders
-                    .map((order, index) => (
+                    .map((order: Order, index: number) => (
                         <tr key={index}>
                             <td>{order.user.username}</td>
                             <td>
@@ -29,49 +25,17 @@ export default function Orders({ orders, user }) {
                                         aria-label="price"
                                         value={order.price}
                                         disabled={!onEdit || user?.id !== order.user.id}
+                                        type="number"
+                                        step=".01"
+                                        onChange={updateOrders(index)}
                                     />
                                 }
                                 {
                                     user?.id !== order.user.id &&
                                     order.price
                                 }
-
-
                             </td>
                             <td>{order.expirationDate}</td>
-                            <td>
-                                {
-                                    !onEdit && user?.id === order.user.id &&
-                                    <Button
-                                        disabled={user?.id !== order.user.id}
-                                        onClick={() => setOnEdit(!onEdit)}
-                                        variant="primary"
-                                    >
-                                        Modifier
-                                    </Button>
-                                }
-
-                                {
-                                    onEdit && user?.id === order.user.id &&
-                                    <>
-                                        <Button
-                                            className="mr-3"
-                                            disabled={user?.id !== order.user.id}
-                                            onClick={() => setOnEdit(!onEdit)}
-                                            variant="success"
-                                        >
-                                            Valider
-                                        </Button>
-                                        <Button
-                                            disabled={user?.id !== order.user.id}
-                                            onClick={() => setOnEdit(false)}
-                                            variant="warning"
-                                        >
-                                            Annuler
-                                        </Button>
-                                    </>
-                                }
-                            </td>
                             <td>
                                 {
                                     user?.id === order.user.id &&
