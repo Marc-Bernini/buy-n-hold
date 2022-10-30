@@ -3,12 +3,14 @@ import { useHistory } from "react-router";
 import { Alert, Button, Col, Container, Form, InputGroup, Spinner } from "react-bootstrap";
 import * as auth from "../../services/auth";
 import { User } from "../../interfaces/User";
+import { useAppContext } from "../../contexts/AppContext";
 
 export default function Login() {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [validated, setValidated] = useState(false);
   const [error, setError] = useState(null);
+  const { token, setToken } = useAppContext();
   const user: User = {
     username: null,
     password: null
@@ -28,10 +30,11 @@ export default function Login() {
   const createAndLogUser = async () => {
     try {
       setLoading(true);
-      const res = await auth.createAndLogin(user);
-      console.log(res);
+      setError(null);
+      const {data} = await auth.createAndLogin(user);
       setLoading(false);
-      // history.push("/trade?token=test");
+      setToken(data.jwt);
+      history.push(`/trade?token=${data.jwt}`);
     } catch (error) {
       const { response } = error;
       let message: string;
