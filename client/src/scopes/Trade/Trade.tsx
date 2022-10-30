@@ -26,6 +26,7 @@ export default function Trade() {
   const [onEdit, setOnEdit] = useState(false);
   const { token, setToken } = useAppContext();
   const [showAlert, setShowAlert] = useState(false);
+  const [totalOrders, setTotalOrders] = useState(null);
 
   const getOrders = async () => {
     try {
@@ -44,7 +45,7 @@ export default function Trade() {
     setOnEdit(false);
     setOrders(ordersCopy);
   }
-  
+
   const deleteOrder = async (id: number) => {
     try {
       await orderService.deleteOrder(id, token);
@@ -73,6 +74,17 @@ export default function Trade() {
       return order;
     });
     setOrders(newOrders);
+  }
+
+  const getTotalOrders = (date: string) => {
+    const reducer = (previousValue: number, currentValue: number) => previousValue + currentValue;
+    const initialValue = 0;
+    const prices: Array<number> = orders
+      .filter(order => order.expirationDate === date)
+      .map(order => parseFloat(order.price));
+
+    const total: number = prices.reduce(reducer, initialValue);
+    setTotalOrders(total);
   }
 
 
@@ -215,6 +227,22 @@ export default function Trade() {
         updateOrders={updateOrders}
         deleteOrder={deleteOrder}
       ></Orders>
+      <Row className="align-items-center">
+        <Form.Label column="lg" lg={4} htmlFor="date">
+          {"Total des ordres d'achat à une date donnée"}
+        </Form.Label>
+        <Col lg="2">
+          <Form.Control
+            id="date"
+            type="date"
+            onChange={(event) => getTotalOrders(event.target.value)}
+          />
+        </Col>
+
+        <Col className="bg-success text-white" lg="2">
+          Total: {totalOrders}
+        </Col>
+      </Row>
       <div className="stats"></div>
     </Container>
   );
