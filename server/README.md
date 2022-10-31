@@ -7,3 +7,9 @@ Lancer yarn install
 DB_USER
 DB_PASSWORD
 DB_NAME
+SALT_ROUNDS
+JWT_ALGORITHM
+JWT_PRIVATE_KEY
+
+- Installer Postgres
+- Créer une base de donnée BuyNHold
