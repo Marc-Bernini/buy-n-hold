@@ -9,10 +9,12 @@ import {
   Spinner
 } from "react-bootstrap";
 import Orders from "../../components/orders";
+import Users from "../../components/users";
 import { useAppContext } from "../../contexts/AppContext";
 import { Order } from "../../interfaces/Order";
 import { User } from "../../interfaces/User";
 import * as orderService from "../../services/order";
+import * as userService from "../../services/user";
 
 import "./Trade.css";
 
@@ -27,6 +29,13 @@ export default function Trade() {
   const { token, setToken } = useAppContext();
   const [showAlert, setShowAlert] = useState(false);
   const [totalOrders, setTotalOrders] = useState(null);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    getOrders()
+      .then(getUsers)
+      .catch(error => setError("OUPS... Une erreur est survenue"));
+  }, []);
 
   const getOrders = async () => {
     try {
@@ -41,6 +50,15 @@ export default function Trade() {
     }
   }
 
+  const getUsers = async () => {
+    try {
+      const { data } = await userService.getUsers(token);
+      setUsers(data);
+    } catch (error) {
+      throw error
+    }
+  }
+
   const cancel = () => {
     setOnEdit(false);
     setOrders(ordersCopy);
@@ -50,6 +68,7 @@ export default function Trade() {
     try {
       await orderService.deleteOrder(id, token);
       await getOrders();
+      await getUsers();
     } catch (error) {
       setError("OUPS... Une erreur est survenue");
     }
@@ -61,6 +80,8 @@ export default function Trade() {
       const ordersToUpdate: Array<Order> = orders.filter(order => order.user.id === user?.id);
       await orderService.updateOrders(ordersToUpdate, token);
       setShowAlert(true);
+      await getOrders();
+      await getUsers();
     } catch (error) {
       setError("OUPS... Une erreur est survenue");
     }
@@ -93,15 +114,10 @@ export default function Trade() {
     const initialValue = 0;
     const numberOfOrders: number = orders.length;
     const prices: Array<number> = orders.map(order => parseFloat(order.price));
-    const totalPrices = prices.reduce(reducer, initialValue);
-    return totalPrices/numberOfOrders;
+    const totalPrices: number = prices.reduce(reducer, initialValue);
+    const average: number = totalPrices / numberOfOrders;
+    return Math.round((average + Number.EPSILON) * 100) / 100;
   }
-
-
-  useEffect(() => {
-    getOrders()
-      .catch(error => setError("OUPS... Une erreur est survenue"));
-  }, []);
 
   const order: Order = {
     price: null
@@ -125,6 +141,7 @@ export default function Trade() {
       const { data } = await orderService.createOrder(order, token);
       setLoading(false);
       await getOrders();
+      await getUsers();
     } catch (error) {
       const { response } = error;
       let message: string;
@@ -186,7 +203,7 @@ export default function Trade() {
           </Col>
         </Row>
       </Form>
-      <Row className="align-items-center mt-3">
+      <Row className="align-items-center my-3">
         <Col lg="2">
           {
             !onEdit &&
@@ -262,7 +279,13 @@ export default function Trade() {
           Total: {getOrdersAverage()}
         </Col>
       </Row>
-      <div className="stats"></div>
+      <Row className="mt-5">
+        {
+          users.map((user, index) => (
+            <Users key={index} user={user} index={index}></Users>
+          ))
+        }
+      </Row>
     </Container>
   );
 }
