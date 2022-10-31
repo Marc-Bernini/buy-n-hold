@@ -16,8 +16,6 @@ import { User } from "../../interfaces/User";
 import * as orderService from "../../services/order";
 import * as userService from "../../services/user";
 
-import "./Trade.css";
-
 export default function Trade() {
   const [validated, setValidated] = useState(false);
   const [loading, setLoading] = useState(false);
