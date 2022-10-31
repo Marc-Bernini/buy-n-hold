@@ -30,3 +30,14 @@ exports.createUser = async (req, res, next) => {
         next(error);
     }
 }
+
+exports.getUsers = async (req, res, next) => {
+    try {
+        const users = await userService.findAllGroupByOrders();
+        const usersWithOrders = users.filter(user => user.dataValues.total);
+        res.status(200).json(usersWithOrders);
+    } catch (error) {
+        console.log(error)
+        next(error);
+    }
+}

@@ -18,3 +18,23 @@ exports.findByPk = id => {
         attributes: ["id"]
     });
 }
+
+exports.findAllGroupByOrders = () => {
+    return models.User.findAll({
+        attributes: [
+            "id",
+            "username",
+            [models.sequelize.fn("SUM", models.sequelize.col("price")), "total"]
+        ],
+        include: [
+            {
+                model: models.Order,
+                attributes: []
+            }
+        ],
+        group: ["user.id"],
+        order: [
+            ["total", "DESC"]
+        ]
+    });
+}
