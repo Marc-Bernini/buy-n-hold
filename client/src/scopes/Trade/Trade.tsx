@@ -17,6 +17,7 @@ import * as orderService from "../../services/order";
 import * as userService from "../../services/user";
 
 export default function Trade() {
+  const [averageOrder, setAverageOrder] = useState(0);
   const [validated, setValidated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -28,12 +29,21 @@ export default function Trade() {
   const [showAlert, setShowAlert] = useState(false);
   const [totalOrders, setTotalOrders] = useState(null);
   const [users, setUsers] = useState([]);
+  const order: Order = {
+    price: null
+  };
 
   useEffect(() => {
-    getOrders()
-      .then(getUsers)
-      .catch(error => setError("OUPS... Une erreur est survenue"));
+    getOrders();
   }, []);
+
+  useEffect(() => {
+    if (!onEdit) {
+      getUsers();
+      const newAverageOrder: number = calculOrdersAverage();
+      setAverageOrder(newAverageOrder);
+    }
+  }, [orders]);
 
   const getOrders = async () => {
     try {
@@ -44,7 +54,7 @@ export default function Trade() {
       setOrdersCopy(ordersFromDb);
       setUser(userFromDb);
     } catch (error) {
-      throw error;
+      setError("OUPS... Une erreur est survenue");
     }
   }
 
@@ -66,7 +76,6 @@ export default function Trade() {
     try {
       await orderService.deleteOrder(id, token);
       await getOrders();
-      await getUsers();
     } catch (error) {
       setError("OUPS... Une erreur est survenue");
     }
@@ -79,14 +88,13 @@ export default function Trade() {
       await orderService.updateOrders(ordersToUpdate, token);
       setShowAlert(true);
       await getOrders();
-      await getUsers();
     } catch (error) {
       setError("OUPS... Une erreur est survenue");
     }
   }
 
   const updateOrders = (index: number) => (event) => {
-    const newOrders = orders.map((order, i) => {
+    const newOrders: Array<Order> = orders.map((order: Order, i: number) => {
       if (index === i) {
         return { ...order, price: event.target.value };
       }
@@ -96,7 +104,7 @@ export default function Trade() {
   }
 
 
-  const reducer = (previousValue: number, currentValue: number) => previousValue + currentValue;
+  const reducer = (previousValue: number, currentValue: number): number => previousValue + currentValue;
 
   const getTotalOrders = (date: string) => {
     const initialValue = 0;
@@ -108,7 +116,7 @@ export default function Trade() {
     setTotalOrders(total);
   }
 
-  const getOrdersAverage = () => {
+  const calculOrdersAverage = (): number => {
     const initialValue = 0;
     const numberOfOrders: number = orders.length;
     const prices: Array<number> = orders.map(order => parseFloat(order.price));
@@ -116,10 +124,6 @@ export default function Trade() {
     const average: number = totalPrices / numberOfOrders;
     return Math.round((average + Number.EPSILON) * 100) / 100;
   }
-
-  const order: Order = {
-    price: null
-  };
 
   const onSubmit = (event) => {
     const form = event.currentTarget;
@@ -139,7 +143,6 @@ export default function Trade() {
       const { data } = await orderService.createOrder(order, token);
       setLoading(false);
       await getOrders();
-      await getUsers();
     } catch (error) {
       const { response } = error;
       let message: string;
@@ -281,13 +284,17 @@ export default function Trade() {
           lg="2"
           xs="5"
         >
-          Total: {getOrdersAverage()}
+          Total: {averageOrder}
         </Col>
       </Row>
       <Row className="mt-5">
         {
           users.map((user, index) => (
-            <Users key={index} user={user} index={index}></Users>
+            <Users
+              key={index}
+              user={user}
+              index={index}
+            ></Users>
           ))
         }
       </Row>
