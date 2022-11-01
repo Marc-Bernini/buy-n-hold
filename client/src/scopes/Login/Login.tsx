@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { Alert, Button, Col, Container, Form, InputGroup, Spinner } from "react-bootstrap";
 import * as auth from "../../services/auth";
-import { User } from "../../interfaces/User";
 import { useAppContext } from "../../contexts/AppContext";
 
 export default function Login() {
@@ -10,14 +9,12 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [validated, setValidated] = useState(false);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState({username: null, password: null});
   const { token, setToken } = useAppContext();
-  let user: User = {
-    username: null,
-    password: null
-  };
 
   const onSubmit = (event) => {
     const form = event.currentTarget;
+    setUser(user);
     event.preventDefault();
     event.stopPropagation();
     setValidated(true);
@@ -70,16 +67,16 @@ export default function Login() {
           lg="3"
           xs="10"
         >
-          <Form.Label>Username</Form.Label>
+          <Form.Label className="text-light">Pseudo</Form.Label>
           <InputGroup hasValidation>
             <Form.Control
               onChange={(e) => user.username = e.target.value}
-              placeholder="Username"
+              placeholder="Pseudo"
               required
               type="text"
             />
             <Form.Control.Feedback type="invalid">
-              Please fill your username
+              Le pseudo est obligatoire
             </Form.Control.Feedback>
           </InputGroup>
         </Form.Group>
@@ -91,18 +88,18 @@ export default function Login() {
           lg="3"
           xs="10"
         >
-          <Form.Label>Password</Form.Label>
+          <Form.Label className="text-light">Mot de passe</Form.Label>
           <InputGroup hasValidation>
             <Form.Control
               onChange={(e) => user.password = e.target.value}
               pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$"
-              placeholder="Password"
+              placeholder="Mot de passe"
               required
               type="password"
             />
             <Form.Control.Feedback type="invalid">
-              Please fill your password. It must contains at least one lowercase letter, one capital letter, one number
-              and one special character
+              Votre mot de passe doit contenir une lettre minuscule, une lettre majuscule, un chiffre
+              et un caractère spécial.
             </Form.Control.Feedback>
           </InputGroup>
         </Form.Group>
@@ -118,7 +115,7 @@ export default function Login() {
                   aria-hidden="true"
                 />
                 :
-                "Submit"
+                "Valider"
             }
           </Button>
         </Col>
