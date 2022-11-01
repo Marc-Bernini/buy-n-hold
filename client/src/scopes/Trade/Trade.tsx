@@ -170,9 +170,9 @@ export default function Trade() {
       >
         <Row className="align-items-center">
           <Form.Label column="lg" lg={2} htmlFor="price">
-            Price
+            Prix
           </Form.Label>
-          <Col lg="2">
+          <Col className="mb-3 mb-lg-0" lg="2">
             <Form.Control
               id="price"
               onChange={(e) => order.price = e.target.value}
@@ -263,9 +263,12 @@ export default function Trade() {
             onChange={(event) => getTotalOrders(event.target.value)}
           />
         </Col>
-
-        <Col className="bg-success text-white" lg="2">
-          Total: {totalOrders}
+        <Col
+          className="bg-success text-white mx-auto mx-lg-0 mt-3 mt-lg-0"
+          lg="2"
+          xs="5"
+        >
+          Total: {totalOrders || "N/A"}
         </Col>
       </Row>
       <Row className="align-items-center">
@@ -273,7 +276,11 @@ export default function Trade() {
           {"Moyenne des ordres d'achats"}
         </Form.Label>
 
-        <Col className="bg-success text-white" lg="2">
+        <Col
+          className="bg-success text-white mx-auto mx-lg-0 mt-3 mt-lg-0"
+          lg="2"
+          xs="5"
+        >
           Total: {getOrdersAverage()}
         </Col>
       </Row>
